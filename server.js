@@ -5,7 +5,10 @@ import errorHandler from "./middlewares/errorHandlers";
 
 const app = express();
 
-app.use(express.json())
+
+/* database connection */
+app.use(express.json());
+
 
 app.use("/api", routes); //register routes  eg:  /register
 
