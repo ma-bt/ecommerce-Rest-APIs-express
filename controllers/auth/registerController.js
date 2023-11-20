@@ -1,6 +1,9 @@
 import Joi from "joi";
 import CustomErrorHandler from "../../services/CustomErrorHandler";
 import { User } from "../../models";
+import bcrypt from "bcrypt";
+import JwtService from "../../services/JwtService";
+
 const registerController = {
   async register(req, res, next) {
     /*  register logic */
@@ -30,16 +33,41 @@ const registerController = {
           CustomErrorHandler.alreadyExists("This email is already taken")
         );
       }
-    } catch (err) { //If an error occurs during the execution of the User.exists method (for example, a database error or any other unexpected error), the catch block catches the error.
+    } catch (err) {
+      //If an error occurs during the execution of the User.exists method (for example, a database error or any other unexpected error), the catch block catches the error.
       return next(err); // takes error from the default error handler
     }
 
+    /*  hash password */
+    const { name, email, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     /* prepare model */
+
+    const user = new User ({
+      name: name,
+      email: email,
+      password: hashedPassword,
+    });
+
     /* store in database */
-    /* generate jwt token */
+    let access_token
+
+    try {
+      const result = await user.save();
+    
+
+      /* generate jwt token */
+    access_token = JwtService.sign({
+        _id: result._id,
+        role: result.role,
+      });
+    } catch (err) {
+      return next(err);
+    }
     /* send response */
 
-    res.json({ msg: "Hello world" });
+    res.json({ access_token: access_token });
   },
 };
 export default registerController;
