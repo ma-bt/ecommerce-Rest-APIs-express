@@ -9,7 +9,7 @@ const userSchema = new Schema(
     password: { type: String, required: true },
     role: { type: String, default: "customer" },
   },
-  { timestamps: ture } // for created at and recorded at in database
+  { timestamps: true } // for created at and recorded at in database
 );
 
 
