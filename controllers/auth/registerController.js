@@ -44,24 +44,25 @@ const registerController = {
 
     /* prepare model */
 
-    const user = new User ({
+    const user = new User({
       name: name,
       email: email,
       password: hashedPassword,
     });
 
     /* store in database */
-    let access_token
+    let access_token;
 
     try {
       const result = await user.save();
-    
 
       /* generate jwt token */
-    access_token = JwtService.sign({
-        _id: result._id,
-        role: result.role,
-      });
+      access_token = JwtService.sign(
+        {
+          _id: result._id,
+          role: result.role,
+        } //payload
+      );
     } catch (err) {
       return next(err);
     }
