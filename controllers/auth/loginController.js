@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 import CustomErrorHandler from "../../services/CustomErrorHandler";
 import JwtService from "../../services/JwtService";
-import {  REFRESH_TOKEN_SECRET } from "../../config";
+import { REFRESH_TOKEN_SECRET } from "../../config";
 
 const loginController = {
   async login(req, res, next) {
@@ -22,8 +22,8 @@ const loginController = {
     }
 
     try {
-      const user =  await User.findOne({ email: req.body.email });
-      console.log(user,"User");
+      const user = await User.findOne({ email: req.body.email });
+      console.log(user, "User");
       if (!user) {
         return next(CustomErrorHandler.wrongCredentials());
       }
@@ -49,11 +49,33 @@ const loginController = {
         REFRESH_TOKEN_SECRET
       );
 
-      await RefreshToken.create({token: refresh_token})
+      await RefreshToken.create({ token: refresh_token });
       res.json({ access_token, refresh_token });
     } catch (err) {
       return next(err);
     }
+  },
+
+  async logout(req, res, next) {
+    /* validating the refresh token */
+    const refreshSchema = Joi.object({
+      refresh_token: Joi.string().required(),
+    });
+
+    const { error } = refreshSchema.validate(req.body);
+
+    if (error) {
+      return next(error);
+    }
+    try {
+      await RefreshToken.deleteOne({ token: req.body.refresh_token });
+    } catch (err) {
+      return next(new Error("Somthing Went Wrong in the Database"));
+    }
+
+
+
+    res.json({status: 1 })
   },
 };
 
