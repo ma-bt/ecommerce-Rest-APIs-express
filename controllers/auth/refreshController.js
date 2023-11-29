@@ -55,6 +55,7 @@ const refreshController = {
           role: user.role,
         } //payload
       );
+      console.log(access_token)
 
       const refresh_token = JwtService.sign(
         { _id: user._id, role: user.role },
