@@ -4,6 +4,7 @@ import {
   refreshController,
   registerController,
   userController,
+  productController
 } from "../controllers";
 import auth from "../middlewares/auth";
 
@@ -13,4 +14,5 @@ router.post("/register", registerController.register); //registerController is r
 router.post("/login", loginController.login);
 router.get("/me", auth, userController.me);
 router.post("/refresh", refreshController.refresh);
+router.post("/products", productController.store);
 export default router;
