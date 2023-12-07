@@ -11,18 +11,19 @@ const errorHandler = (err, req, res, next) => {
     }),
   }; //default error handler
 
-  if (err instanceof ValidationError) { //indicates validation error from joi library
+  if (err instanceof ValidationError) {
+    //indicates validation error from joi library
     statusCode = 422;
     data = {
       message: err.message,
     };
   }
 
-  if(err instanceof CustomErrorHandler) {
-    statusCode = err.status
+  if (err instanceof CustomErrorHandler) {
+    statusCode = err.status;
     data = {
-        message: err.message
-    }
+      message: err.message,
+    };
   }
 
   return res.status(statusCode).json(data);
