@@ -4,7 +4,7 @@ import {
   refreshController,
   registerController,
   userController,
-  productController
+  productController,
 } from "../controllers";
 import auth from "../middlewares/auth";
 
